@@ -30,7 +30,7 @@ class SignUpScreen extends HookConsumerWidget {
               data: (data) {
                 debugPrint("data: $data");
                 if (data.containsValue("Sign Up Success")) {
-                  Get.back();
+                  Future.delayed(Duration.zero).then((value) => {Get.back()});
                 }
                 return ListView(
                   shrinkWrap: true,
@@ -99,7 +99,7 @@ class SignUpScreen extends HookConsumerWidget {
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  primary: Colors.pink,
+                                  backgroundColor: Colors.pink,
                                 ),
                                 onPressed: () {
                                   final data = {

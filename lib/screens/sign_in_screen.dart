@@ -13,9 +13,6 @@ class SignInScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final double resWidth = MediaQuery.of(context).size.width; // 360
-    final double resHeight = MediaQuery.of(context).size.height; // 677.33
-
     final authres = ref.watch(authenticationResponseProvider);
     final emailController = useTextEditingController();
     final passwordController = useTextEditingController();
@@ -65,7 +62,7 @@ class SignInScreen extends HookConsumerWidget {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: Colors.pink,
+                                        backgroundColor: Colors.pink,
                                         // backgroundColor: Colors.pink,
                                       ),
                                       onPressed: () {

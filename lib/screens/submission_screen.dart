@@ -1,3 +1,5 @@
+import 'package:dio/dio.dart' as dio;
+import 'package:fcm_thesis_publish/services/shared_pref_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -27,6 +29,8 @@ class SubmissionScreen extends HookConsumerWidget {
     'CE',
   ];
 
+  SubmissionScreen({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final deptDropDownValue = useState('CSE');
@@ -34,12 +38,76 @@ class SubmissionScreen extends HookConsumerWidget {
     final uploadCoverImg = useState<PlatformFile?>(null);
     final uploadPdf = useState<PlatformFile?>(null);
     final thesisNameCtrl = useTextEditingController();
-    final batchCtl = useTextEditingController();
     final teamFristName = useTextEditingController();
     final teamSecondName = useTextEditingController();
     final teamThirdName = useTextEditingController();
     final teamForthName = useTextEditingController();
     final superVisorName = useTextEditingController();
+
+    final dioInstance = ref.watch(dioClientProvider);
+
+    final isLoading = useState(false); // Hook to track loading state
+    final error = useState<String?>(null);
+
+    Future<void> uploadAndPostFiles() async {
+      isLoading.value = true;
+      error.value = null;
+
+      try {
+        // Upload first file
+
+        final firstFile = dio.FormData.fromMap({
+          'file': dio.MultipartFile.fromBytes(uploadCoverImg.value!.bytes ?? [],
+              filename: uploadCoverImg.value!.name),
+        });
+        final firstResponse =
+            await dioInstance.post('/uploads', data: firstFile);
+        final fristUrl = firstResponse.data['url'];
+
+        // Upload second file
+
+        final secondFile = dio.FormData.fromMap({
+          'file': dio.MultipartFile.fromBytes(uploadPdf.value!.bytes ?? [],
+              filename: uploadPdf.value!.name),
+        });
+        final secondResponse =
+            await dioInstance.post('/uploads', data: secondFile);
+        final thsisUrl = secondResponse.data['url'];
+
+        final postData = {
+          "thesesName": thesisNameCtrl.text,
+          "batch": batchDropDownValue.value,
+          "department": deptDropDownValue.value,
+          "teammateFirstName": teamFristName.text,
+          "teammateSecondName": teamSecondName.text,
+          "teammateThirdName": teamThirdName.text,
+          "teammateFourthName": teamForthName.text,
+          "superVisorName": superVisorName.text,
+          "coverPage": fristUrl,
+          "pdf": thsisUrl
+        };
+
+        // Make post request with file URLs
+        // final postData = {'firstUrl': firstUrl, 'secondUrl': secondUrl};
+        final postResponse =
+            await dioInstance.post('/submission', data: postData);
+
+        debugPrint(postResponse.data.toString());
+        Get.back();
+
+        // Handle post response
+        // ...
+        // Your code to handle the post response here
+      } catch (e) {
+        // Handle exceptions
+        // ...
+        // Your code to handle exceptions here
+        error.value = 'Error occurred during file upload: $e';
+        print('Exception occurred: $e');
+      } finally {
+        isLoading.value = false;
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -195,11 +263,20 @@ class SubmissionScreen extends HookConsumerWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blue.shade900,
+                    backgroundColor: Colors.blue.shade900,
                   ),
-                  onPressed: () {
-                    debugPrint(uploadPdf.value!.name);
-                    debugPrint(uploadCoverImg.value!.name);
+                  onPressed: () async {
+                    if (uploadPdf.value == null ||
+                        uploadCoverImg.value == null) {
+                      Get.showSnackbar(const GetSnackBar(
+                        messageText: Text("PLEASE UPLOAD COVER AND THEIS FILE"),
+                      ));
+                      return;
+                    }
+                    debugPrint(uploadPdf.value!.toString());
+                    debugPrint(uploadCoverImg.value!.toString());
+                    uploadAndPostFiles();
+                    // uploadCoverImg.value?.path;
                     // Get.to(const MainNavBarScreen());
                   },
                   child: Text('Submit', style: GoogleFonts.ubuntu()),

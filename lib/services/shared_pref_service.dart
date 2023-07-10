@@ -22,7 +22,7 @@ final dioClientProvider = Provider<Dio>(
     final token = ref.watch(tokenProvider);
     return Dio(
       BaseOptions(
-        baseUrl: 'http://localhost:3000',
+        baseUrl: 'http://localhost:3001',
         headers: {
           'Authorization': 'Bearer $token',
         },

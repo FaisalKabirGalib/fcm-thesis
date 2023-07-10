@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:fcm_thesis_publish/services/shared_pref_service.dart';
-import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final authenticationResponseProvider = StateNotifierProvider<
@@ -27,7 +26,11 @@ class AuthenticationResponseNotifier
           'password': password,
         },
       );
-      debugPrint(response.data.toString());
+      final res = Map<String, dynamic>.from(response.data);
+
+      if (res.containsKey("error")) {
+        throw Exception(res["error"]);
+      }
 
       state = AsyncValue.data(response.data);
       ref.read(tokenProvider.notifier).state = response.data['token'];

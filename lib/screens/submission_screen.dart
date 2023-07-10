@@ -33,6 +33,14 @@ class SubmissionScreen extends HookConsumerWidget {
     final batchDropDownValue = useState('Batch-01');
     final uploadCoverImg = useState<PlatformFile?>(null);
     final uploadPdf = useState<PlatformFile?>(null);
+    final thesisNameCtrl = useTextEditingController();
+    final batchCtl = useTextEditingController();
+    final teamFristName = useTextEditingController();
+    final teamSecondName = useTextEditingController();
+    final teamThirdName = useTextEditingController();
+    final teamForthName = useTextEditingController();
+    final superVisorName = useTextEditingController();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -64,7 +72,7 @@ class SubmissionScreen extends HookConsumerWidget {
               const SizedBox(height: 10),
               STPTextWidget(
                 name: "enter thesis name",
-                controller: TextEditingController(),
+                controller: thesisNameCtrl,
               ),
               const SizedBox(height: 10),
 
@@ -137,22 +145,22 @@ class SubmissionScreen extends HookConsumerWidget {
               const SizedBox(height: 10),
               STPTextWidget(
                 name: "first name",
-                controller: TextEditingController(),
+                controller: teamFristName,
               ),
               const SizedBox(height: 10),
               STPTextWidget(
                 name: "second name",
-                controller: TextEditingController(),
+                controller: teamSecondName,
               ),
               const SizedBox(height: 10),
               STPTextWidget(
                 name: "third name",
-                controller: TextEditingController(),
+                controller: teamThirdName,
               ),
               const SizedBox(height: 10),
               STPTextWidget(
                 name: "fourth name",
-                controller: TextEditingController(),
+                controller: teamForthName,
               ),
               const SizedBox(height: 10),
 
@@ -165,7 +173,7 @@ class SubmissionScreen extends HookConsumerWidget {
               const SizedBox(height: 10),
               STPTextWidget(
                 name: "enter supervisor's name",
-                controller: TextEditingController(),
+                controller: superVisorName,
               ),
               const SizedBox(height: 10),
 

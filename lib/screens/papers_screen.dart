@@ -45,7 +45,7 @@ class _PapersScreenState extends State<PapersScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: CustomColor.BLUEGREY,
         onPressed: () {
-          Get.to(const SubmissionScreen());
+          Get.to(SubmissionScreen());
         },
         child: const Icon(Icons.add),
       ),

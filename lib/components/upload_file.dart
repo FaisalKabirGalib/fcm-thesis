@@ -6,9 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 class UploadFileWidget extends StatelessWidget {
   final String title;
+  final ValueNotifier<PlatformFile?> file;
   const UploadFileWidget({
     super.key,
     required this.title,
+    required this.file,
   });
 
   @override
@@ -48,6 +50,7 @@ class UploadFileWidget extends StatelessWidget {
             ),
           ));
     } else {
+      file.value = pickerResult.files[0];
       Get.snackbar(title, "Upload Successful",
           backgroundColor: Colors.greenAccent,
           icon: const Padding(

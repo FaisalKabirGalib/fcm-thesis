@@ -28,6 +28,7 @@ class AuthenticationResponseNotifier
         },
       );
       debugPrint(response.data.toString());
+
       state = AsyncValue.data(response.data);
       ref.read(tokenProvider.notifier).state = response.data['token'];
     } catch (e, s) {

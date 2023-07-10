@@ -1,18 +1,13 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../components/upload_file.dart';
-import 'main_navbar_screen.dart';
 
-class SubmissionScreen extends StatefulWidget {
-  const SubmissionScreen({super.key});
-
-  @override
-  State<SubmissionScreen> createState() => _SubmissionScreenState();
-}
-
-class _SubmissionScreenState extends State<SubmissionScreen> {
+class SubmissionScreen extends HookConsumerWidget {
   List<String> batchDropDownItem = <String>[
     'Batch-01',
     'Batch-02',
@@ -25,17 +20,19 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
     'Batch-09',
     'Batch-10',
   ];
-  String batchDropDownValue = 'Batch-01';
 
   List<String> deptDropDownItem = <String>[
     'CSE',
     'EEE',
     'CE',
   ];
-  String deptDropDownValue = 'CSE';
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final deptDropDownValue = useState('CSE');
+    final batchDropDownValue = useState('Batch-01');
+    final uploadCoverImg = useState<PlatformFile?>(null);
+    final uploadPdf = useState<PlatformFile?>(null);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -95,11 +92,9 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
-                  setState(() {
-                    batchDropDownValue = newValue!;
-                  });
+                  batchDropDownValue.value = newValue!;
                 },
-                value: batchDropDownValue,
+                value: batchDropDownValue.value,
               ),
               const SizedBox(height: 10),
 
@@ -127,11 +122,9 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
                   );
                 }).toList(),
                 onChanged: (String? newValue) {
-                  setState(() {
-                    deptDropDownValue = newValue!;
-                  });
+                  deptDropDownValue.value = newValue!;
                 },
-                value: deptDropDownValue,
+                value: deptDropDownValue.value,
               ),
               const SizedBox(height: 10),
 
@@ -177,13 +170,15 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
               const SizedBox(height: 10),
 
               // upload Cover Page
-              const UploadFileWidget(
+              UploadFileWidget(
                 title: 'Upload Cover page',
+                file: uploadCoverImg,
               ),
               const SizedBox(height: 10),
               // upload pdf
-              const UploadFileWidget(
+              UploadFileWidget(
                 title: 'Upload PDF',
+                file: uploadPdf,
               ),
               const SizedBox(height: 20),
 
@@ -195,7 +190,9 @@ class _SubmissionScreenState extends State<SubmissionScreen> {
                     primary: Colors.blue.shade900,
                   ),
                   onPressed: () {
-                    Get.to(const MainNavBarScreen());
+                    debugPrint(uploadPdf.value!.name);
+                    debugPrint(uploadCoverImg.value!.name);
+                    // Get.to(const MainNavBarScreen());
                   },
                   child: Text('Submit', style: GoogleFonts.ubuntu()),
                 ),
